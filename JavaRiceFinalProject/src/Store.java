@@ -8,6 +8,14 @@ public class Store implements GameDisplayFunctions {
         storeGameList = new LinkedList<>();
     }
 
+    public void addGame() {
+
+    }
+
+    public void removeGame() {
+        
+    }
+
     public void purchase(Game game) {
 
     }
