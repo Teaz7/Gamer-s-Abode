@@ -1,11 +1,11 @@
 import java.util.LinkedList;
 
 public class Library implements GameDisplayFunctions {
-    private LinkedList<Game> gameList;
+    private LinkedList<Game> libraryGameList;
     private AccountUser accountUser = null;
 
     public Library() {
-        gameList = new LinkedList<>();
+        libraryGameList = new LinkedList<>();
     }
 
     public AccountUser getAccountUser() {

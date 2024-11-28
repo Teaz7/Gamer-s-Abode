@@ -5,4 +5,12 @@ public class Customer extends AccountUser {
         super(firstName, lastName, country, emailAddress, store, library);
         this.walletAmount = walletAmount;
     }
+
+    public void changeAccountDetails() {
+
+    }
+
+    public void displayAccountDetails() {
+
+    }
 }
