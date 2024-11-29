@@ -13,7 +13,7 @@ public class Store implements GameDisplayFunctions {
     }
 
     public void removeGame() {
-        
+
     }
 
     public void purchase(Game game) {
