@@ -18,4 +18,14 @@ public class Game {
     public void displayGameDetails() {
 
     }
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public double getPrice() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

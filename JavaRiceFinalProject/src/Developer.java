@@ -11,14 +11,17 @@ public class Developer extends AccountUser{
     }
 
     public void changeAccountDetails() {
-
+    	System.out.println("Change Account Details functionality is not yet implemented.");
     }
 
     public void displayAccountDetails() {
-
+    	super.displayAccountDetails(); // Calling parent method to show basic account details
+        System.out.println("Category: " + category);
+        System.out.println("Number of Games Published: " + developerGameList.size());
     }
 
-    public void publishGame() {
-
+    public void publishGame(Game Game) {
+    	developerGameList.add(Game);
+        System.out.println("Game " + Game.getName() + " has been published by " + getFullName());
     }
 }
