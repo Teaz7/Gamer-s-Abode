@@ -1,21 +1,19 @@
 public class Customer extends AccountUser {
     private double walletAmount;
 
-    public Customer(String firstName, String lastName, String country, String emailAddress, Store store, Library library, double walletAmount) {
+    public Customer(String firstName, String lastName, String country, String emailAddress, Store store, Library library) {
         super(firstName, lastName, country, emailAddress, store, library);
-        this.walletAmount = walletAmount;
+        this.walletAmount = 0;
     }
 
+    @Override
     public void changeAccountDetails() {
     	System.out.println("Change Account Details functionality is not yet implemented.");
-
     }
-    
-    @Override
+
     public void displayAccountDetails() {
     	super.displayAccountDetails(); // Call the parent method to show basic account details
         System.out.println("Wallet Balance: $" + walletAmount);
-        
     }
                          
     public void depositFunds(double amount) {

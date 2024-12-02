@@ -20,19 +20,12 @@ public abstract class AccountUser {
         return firstName + " " + lastName;
     }
 
-    public void changeAccountDetails(String newFirstName, String newLastName, String newEmail, String newCountry) {
-    	this.firstName = newFirstName;
-        this.lastName = newLastName;
-        this.emailAddress = newEmail;
-        this.country = newCountry;
-        System.out.println("Account details updated.");
-    }
+    public abstract void changeAccountDetails();
 
     public void displayAccountDetails() {
     	System.out.println("Name: " + getFullName());
         System.out.println("Email: " + emailAddress);
         System.out.println("Country: " + country);
-
     }
 
     public String getFirstName() {

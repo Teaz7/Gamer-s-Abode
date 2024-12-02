@@ -10,6 +10,20 @@ public class Main {
                                 {"Display Account Details", "Change Account Details", "Exit"}, //Customer Account
                                 {"Publish Game", "Display Account Details", "Change Account Details", "Exit"}}; //Developer Account
         boolean programRerun = true;
+        Store store = new Store();
+        Library library = new Library();
+
+        String accountFirstName = JOptionPane.showInputDialog(null, "Enter First Name:",
+                    UITitle, JOptionPane.PLAIN_MESSAGE);
+        String accountLastName = JOptionPane.showInputDialog(null, "Enter Last name:",
+                    UITitle, JOptionPane.PLAIN_MESSAGE);
+        String accountCountry = JOptionPane.showInputDialog(null, "Enter Country:",
+                    UITitle, JOptionPane.PLAIN_MESSAGE);
+        String accountEmailAddress = JOptionPane.showInputDialog(null, "Enter Email Address:",
+                    UITitle, JOptionPane.PLAIN_MESSAGE);
+
+        AccountUser customer = new Customer(accountFirstName, accountLastName, accountCountry, accountEmailAddress, store, library);
+        AccountUser developer = new Developer(accountFirstName, accountLastName, accountCountry, accountEmailAddress, store, library);
 
         while (programRerun) {
             int userOption = JOptionPane.showOptionDialog(null, "message",

@@ -4,12 +4,13 @@ public class Developer extends AccountUser{
     private String category;
     private LinkedList<Game> developerGameList;
 
-    public Developer(String firstName, String lastName, String country, String emailAddress, Store store, Library library, String category) {
+    public Developer(String firstName, String lastName, String country, String emailAddress, Store store, Library library) {
         super(firstName, lastName, country, emailAddress, store, library);
-        this.category = category;
+        this.category = "Indie";
         this.developerGameList = new LinkedList<>();
     }
 
+    @Override
     public void changeAccountDetails() {
     	System.out.println("Change Account Details functionality is not yet implemented.");
     }
