@@ -27,7 +27,6 @@ public class Library implements GameDisplayFunctions {
     }
 
 	public void addGameToLibrary(Game game) {
-		// TODO Auto-generated method stub
 		
 	}
 }

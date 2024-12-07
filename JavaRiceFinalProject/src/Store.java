@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 public class Store implements GameDisplayFunctions {
     private LinkedList<Game> storeGameList;
-    private Wishlist wishlist;
+    private AccountUser accountUser = null;
 
     public Store() {
         storeGameList = new LinkedList<>();
@@ -26,7 +26,7 @@ public class Store implements GameDisplayFunctions {
 
     @Override
     public void displayGames() {
-
+        
     }
 
     @Override
