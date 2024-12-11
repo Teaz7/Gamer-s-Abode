@@ -8,12 +8,28 @@ public class Library implements GameDisplayFunctions {
         libraryGameList = new LinkedList<>();
     }
 
+    public void install(Game game) {
+        game.setInstalled(true);
+    }
+
+    public void uninstall(Game game) {
+        game.setInstalled(false);
+    }
+
+    public void addGameToLibrary(Game game) {
+        libraryGameList.add(game);
+    }
+
     public AccountUser getAccountUser() {
         return accountUser;
     }
 
     public void setAccountUser(AccountUser accountUser) {
         this.accountUser = accountUser;
+    }
+
+    public LinkedList<Game> getLibraryGameList() {
+        return libraryGameList;
     }
 
     @Override
@@ -25,9 +41,4 @@ public class Library implements GameDisplayFunctions {
     public void sortGames() {
 
     }
-
-	public void addGameToLibrary(Game game) {
-		// TODO Auto-generated method stub
-		
-	}
 }

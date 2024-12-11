@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.LinkedList;
 
 public class Developer extends AccountUser{
@@ -15,14 +16,25 @@ public class Developer extends AccountUser{
     	System.out.println("Change Account Details functionality is not yet implemented.");
     }
 
+    @Override
     public void displayAccountDetails() {
-    	super.displayAccountDetails(); // Calling parent method to show basic account details
-        System.out.println("Category: " + category);
-        System.out.println("Number of Games Published: " + developerGameList.size());
+        String message = "";
+        message += "Name: " + getFullName() + "\n";
+        message += "Email: " + getEmailAddress() + "\n";
+        message += "Country: " + getCountry() + "\n";
+        message += "Category: " + category + "\n";
+        message += "Number of Games: " + developerGameList.size() + "\n";
+
+        JOptionPane.showMessageDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void publishGame(Game Game) {
     	developerGameList.add(Game);
         System.out.println("Game " + Game.getName() + " has been published by " + getFullName());
+    }
+
+    public void removeGame(Game Game) {
+        developerGameList.remove(Game);
+        System.out.println("Game " + Game.getName() + " has been removed by " + getFullName());
     }
 }

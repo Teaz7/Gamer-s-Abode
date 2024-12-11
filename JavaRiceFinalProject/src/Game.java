@@ -20,12 +20,14 @@ public class Game {
     }
 
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return name;
 	}
 
 	public double getPrice() {
-		// TODO Auto-generated method stub
-		return 0;
+		return price;
 	}
+
+    public void setInstalled(boolean installed) {
+        isInstalled = installed;
+    }
 }

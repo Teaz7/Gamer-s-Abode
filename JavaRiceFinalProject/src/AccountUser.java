@@ -1,4 +1,6 @@
 public abstract class AccountUser {
+    static String UITitle = "BSIT-2A Java Rice | Gamer's Abode Client";
+
     private String firstName;
     private String lastName;
     private String country;
@@ -21,12 +23,7 @@ public abstract class AccountUser {
     }
 
     public abstract void changeAccountDetails();
-
-    public void displayAccountDetails() {
-    	System.out.println("Name: " + getFullName());
-        System.out.println("Email: " + emailAddress);
-        System.out.println("Country: " + country);
-    }
+    public abstract void displayAccountDetails();
 
     public String getFirstName() {
         return firstName;
