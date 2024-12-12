@@ -25,6 +25,7 @@ public class Main {
         LinkedList<Developer> instancedDeveloperList = new LinkedList<>();
         boolean programRerun = true;
         boolean chosenOptionRerun = true;
+        boolean developerOptionRerun = true;
         Store store = new Store();
         Library library = new Library();
 
@@ -81,6 +82,7 @@ public class Main {
 
                     break;
 
+
                 /*---       LIBRARY     ---*/
                 case 1:
                     while (chosenOptionRerun) {
@@ -104,6 +106,7 @@ public class Main {
                     }
 
                     break;
+
 
                 /*---       ACCOUNT     ---*/
                 case 2:
@@ -131,19 +134,89 @@ public class Main {
 
                     break;
 
+
                 /*---       CHOOSE DEVELOPER       ---*/
                 case 3:
                     while (chosenOptionRerun) {
+                        developerOptionRerun = true;
                         userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   H O M E\n" + drawBorder(65) +
                                         "Access developer tools and resources here. Manage developed game projects and updates.\n\n" +
-                                        "Number of Developers: " + instancedDeveloperList.size(),
+                                        "Enter name of developer to use: ",
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, UIOptions[4], UIOptions[4][0]);
                         switch (userOption2) {
+                            /*---       DEVELOPER       ---*/
                             case 0:
+                                boolean found = false;
+                                Developer foundDeveloper = null;
+                                int userDeveloperOption;
+
+                                for (int i = 0; i < instancedDeveloperList.size(); i++) {
+                                    Developer developer = instancedDeveloperList.get(i);
+                                    if (developer.getFirstName().equals(userOption2)) {
+                                        found = true;
+                                        foundDeveloper = developer;
+                                    }
+                                }
+
+                                if (found) {
+                                    while (developerOptionRerun) {
+                                        userDeveloperOption = JOptionPane.showOptionDialog(null, "message",
+                                                UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, UIOptions[5], UIOptions[5][0]);
+
+                                        switch (userDeveloperOption) {
+                                            case 0:
+                                                break;
+                                            case 1:
+                                                break;
+                                            case 2:
+                                                break;
+                                            case 3:
+                                                break;
+                                            case 4:
+                                                break;
+                                        }
+                                    }
+                                }
                                 break;
                             case 1:
+                                String[] devTypeChoices = {"Independent", "Company"};
+                                JOptionPane.showMessageDialog(null, "to add a dev, u need: name, email, country, and type.",
+                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                String devNameAdd = JOptionPane.showInputDialog(null, "Enter dev name: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                String devEmail = JOptionPane.showInputDialog(null, "Enter email: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                String devCountry = JOptionPane.showInputDialog(null, "Enter country: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                String devType = "";
+                                int devTypeOption = JOptionPane.showOptionDialog(null, "Choose Developer Type:",
+                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, devTypeChoices, devTypeChoices[0]);
+                                switch (devTypeOption) {
+                                    case 0:
+                                        devType = "Independent";
+                                        break;
+                                    case 1:
+                                        devType = "Company";
+                                        break;
+                                }
+
+                                Developer developer = new Developer(devNameAdd, "", devCountry, devEmail, store, library, devType);
+                                instancedDeveloperList.add(developer);
+                                JOptionPane.showMessageDialog(null, "succesfully created account", UITitle, JOptionPane.PLAIN_MESSAGE);
                                 break;
                             case 2:
+                                String devNameRemove = JOptionPane.showInputDialog(null, "input developer name to remove", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                boolean devNameFound = false;
+                                for (int i = 1; i < instancedDeveloperList.size(); i++) {
+                                    if (instancedDeveloperList.get(i).getFirstName().equals(devNameRemove)) {
+                                        instancedDeveloperList.remove(i);
+                                        devNameFound = true;
+                                    }
+                                }
+
+                                if (devNameFound) {
+                                    JOptionPane.showMessageDialog(null, "developer removed", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "developer not found", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                }
+
                                 break;
                             case 3:
                                 break;
@@ -154,6 +227,7 @@ public class Main {
                     }
 
                     break;
+
 
                 /*---       EXIT        ---*/
                 case 4:
