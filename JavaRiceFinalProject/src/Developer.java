@@ -30,7 +30,7 @@ public class Developer extends AccountUser{
 
     public void publishGame(Game Game) {
     	developerGameList.add(Game);
-        System.out.println("Game " + Game.getName() + " has been published by " + getFullName());
+        getStore().getStoreGameList().add(Game);
     }
 
     public void removeGame(Game Game) {

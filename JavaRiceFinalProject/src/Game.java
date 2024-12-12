@@ -27,6 +27,22 @@ public class Game {
 		return price;
 	}
 
+    public int getYear() {
+        return year;
+    }
+
+    public boolean getIsOwned() {
+        return isOwned;
+    }
+
+    public boolean getIsInstalled() {
+        return isInstalled;
+    }
+
+    public void setIsOwned(boolean owned) {
+        isOwned = owned;
+    }
+
     public void setInstalled(boolean installed) {
         isInstalled = installed;
     }

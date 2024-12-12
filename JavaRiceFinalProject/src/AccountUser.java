@@ -14,6 +14,7 @@ public abstract class AccountUser {
         this.country = country;
         this.emailAddress = emailAddress;
         this.store = store;
+        this.store.setAccountUser(this);
         this.library = library;
         this.library.setAccountUser(this);
     }
