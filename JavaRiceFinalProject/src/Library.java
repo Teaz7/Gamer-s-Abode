@@ -42,10 +42,18 @@ public class Library implements GameDisplayFunctions {
     public void displayGames() {
         String message = "";
 
-        message += "NAME" + "\t\t" + "YEAR" + "\t\t" + "OWNED" + "\t\t" + "INSTALLED" + "\t\n\n";
+        message += "NAME" + "\t\t" + "YEAR" + "\t" + "OWNED" + "\t" + "INSTALLED" + "\t\n\n";
 
         for (Game game : libraryGameList) {
-            message += game.getName() + "\t\t" + game.getYear() + "\t\t" + game.getIsOwned() + "\t\t" + game.getIsInstalled() + "\t\n";
+            message += game.getName();
+            if (game.getName().length() > 15) {
+                message += "\t";
+            } else {
+                message += "\t\t";
+            }
+            message += game.getYear() + "\t";
+            message += (game.getIsOwned()) ? "Owned\t" : "Not Owned\t";
+            message += (game.getIsInstalled()) ? "Installed\t\n" : "Not Installed\t\n";
         }
 
         JOptionPane.showMessageDialog(null, new JTextArea(message), UITitle, JOptionPane.INFORMATION_MESSAGE);

@@ -3,15 +3,16 @@ import javax.swing.JTextArea;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Store implements GameDisplayFunctions {
+public class Store implements GameDisplayFunctions, WishlistFunctions {
     static String UITitle = "BSIT-2A Java Rice | Gamer's Abode Client";
 
     private AccountUser accountUser = null;
     private LinkedList<Game> storeGameList;
-    private LinkedList<Queue> wishList;
+    private Queue<Game> wishList;
 
     public Store() {
         storeGameList = new LinkedList<>();
+        wishList = new LinkedList<>();
     }
 
     public void purchase(Game game) {
@@ -24,20 +25,12 @@ public class Store implements GameDisplayFunctions {
         game.setIsOwned(false);
     }
 
-    public void addToWishlist(Game game) {
-        
-    }
-
-    public void removeFromWishlist(Game game) {
-
-    }
-
-    public void displayWishlist() {
-
-    }
-
     public LinkedList<Game> getStoreGameList() {
         return storeGameList;
+    }
+
+    public Queue<Game> getWishList() {
+        return wishList;
     }
 
     public void setAccountUser(AccountUser accountUser) {
@@ -46,11 +39,31 @@ public class Store implements GameDisplayFunctions {
 
     @Override
     public void displayGames() {
+        LinkedList<Game> tempList = new LinkedList<>(storeGameList);
+
+        tempList.removeIf(game -> wishList.contains(game));
+
         String message = "";
 
         message += "NAME" + "\t\t" + "PRICE" + "\t\t" + "DEVELOPER" + "\t\n\n";
+        message += "WISHLIST\n";
 
-        for (Game game : storeGameList) {
+        for (Game game: wishList) {
+            message += game.getName();
+            if (game.getName().length() > 15) {
+                message += "\t";
+            } else {
+                message += "\t\t";
+            }
+
+            message += "P" + game.getPrice() + "\t\t" + game.getDeveloper().getFirstName() + "\t\n";
+        }
+
+        if (!wishList.isEmpty()) {
+            message += "\n\nSTORE LIST\n";
+        }
+
+        for (Game game : tempList) {
             message += game.getName();
             if (game.getName().length() > 15) {
                 message += "\t";
@@ -91,8 +104,6 @@ public class Store implements GameDisplayFunctions {
                         j--;
                     }
                 }
-                JOptionPane.showMessageDialog(null, "List has been alphabetically sorted based on the Game's name",
-                        UITitle, JOptionPane.INFORMATION_MESSAGE);
                 break;
 
             case 1:
@@ -112,8 +123,6 @@ public class Store implements GameDisplayFunctions {
                         j--;
                     }
                 }
-                JOptionPane.showMessageDialog(null, "List has been arranged in-ordeer based on the Game's price",
-                        UITitle, JOptionPane.INFORMATION_MESSAGE);
                 break;
 
             case 2:
@@ -133,12 +142,40 @@ public class Store implements GameDisplayFunctions {
                         j--;
                     }
                 }
-                JOptionPane.showMessageDialog(null, "List has been alphabetically sorted based on the Game's Developer Name",
-                        UITitle, JOptionPane.INFORMATION_MESSAGE);
                 break;
         }
 
         sortGames(start, j, type);
         sortGames(i, end, type);
+    }
+
+    @Override
+    public void addToWishlist(Game game) {
+        wishList.offer(game);
+    }
+
+    @Override
+    public void removeFromWishlist(Game game) {
+        wishList.remove(game);
+    }
+
+    @Override
+    public void displayWishlist() {
+        String message = "";
+
+        message += "NAME" + "\t\t" + "PRICE" + "\t\t" + "DEVELOPER" + "\t\n\n";
+
+        for (Game game : wishList) {
+            message += game.getName();
+            if (game.getName().length() > 15) {
+                message += "\t";
+            } else {
+                message += "\t\t";
+            }
+
+            message += "P" + game.getPrice() + "\t\t" + game.getDeveloper().getFirstName() + "\t\n";
+        }
+
+        JOptionPane.showMessageDialog(null, new JTextArea(message), UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
 }
