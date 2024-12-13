@@ -24,7 +24,9 @@ public class Library implements GameDisplayFunctions {
         libraryGameList.add(game);
     }
 
-    public void removeGameFromLibrary(Game game) { libraryGameList.remove(game); }
+    public void removeGameFromLibrary(Game game) {
+        libraryGameList.remove(game);
+    }
 
     public AccountUser getAccountUser() {
         return accountUser;

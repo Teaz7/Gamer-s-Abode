@@ -15,10 +15,6 @@ public class Game {
         this.developer = developer;
     }
 
-    public void displayGameDetails() {
-
-    }
-
 	public String getName() {
 		return name;
 	}
