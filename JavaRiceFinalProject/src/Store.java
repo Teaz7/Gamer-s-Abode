@@ -59,9 +59,7 @@ public class Store implements GameDisplayFunctions, WishlistFunctions {
             message += "P" + game.getPrice() + "\t\t" + game.getDeveloper().getFirstName() + "\t\n";
         }
 
-        if (!wishList.isEmpty()) {
-            message += "\n\nSTORE LIST\n";
-        }
+        message += "\n\nSTORE LIST\n";
 
         for (Game game : tempList) {
             message += game.getName();

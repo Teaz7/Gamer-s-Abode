@@ -41,7 +41,7 @@ public class Developer extends AccountUser{
                                     UITitle, JOptionPane.PLAIN_MESSAGE);
                         } else {
                             confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to change the developer's name?\n" +
-                                            "Current Developer Name: " + this.getFirstName() + "\nNew Developer Name: " + inputName,
+                                            "Developer's Current Name: " + this.getFirstName() + "\nDeveloper's New Name: " + inputName,
                                     UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                             if (confirmOption == JOptionPane.YES_OPTION) {
                                 this.setFirstName(inputName);
@@ -70,7 +70,7 @@ public class Developer extends AccountUser{
                                     UITitle, JOptionPane.PLAIN_MESSAGE);
                         } else {
                             confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to change the developer's email address?\n" +
-                                            "Current Developer Email Address: " + this.getEmailAddress() + "\nNew Developer Email Address: " + inputEmail,
+                                            "Developer's Current Email Address: " + this.getEmailAddress() + "\nDeveloper's New Email Address: " + inputEmail,
                                     UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                             if (confirmOption == JOptionPane.YES_OPTION) {
                                 this.setEmailAddress(inputEmail);
@@ -99,7 +99,7 @@ public class Developer extends AccountUser{
                                     UITitle, JOptionPane.PLAIN_MESSAGE);
                         } else {
                             confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to change the developer's country?\n" +
-                                            "Current Developer Country: " + this.getCountry() + "\nNew Developer Country: " + inputCountry,
+                                            "Developer's Current Country: " + this.getCountry() + "\nDeveloper's New Country: " + inputCountry,
                                     UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                             if (confirmOption == JOptionPane.YES_OPTION) {
                                 this.setCountry(inputCountry);
@@ -118,8 +118,30 @@ public class Developer extends AccountUser{
                     confirmOption = JOptionPane.showConfirmDialog(null, "Do you want to change the developer's country",
                             UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                     if (confirmOption == JOptionPane.YES_OPTION) {
-                        int inputCategory = JOptionPane.showOptionDialog(null, "",
+                        int inputCategory = JOptionPane.showOptionDialog(null, "Choose Independent or Company to change the developer's category\n" +
+                                        "Developer's current category: " + this.category,
                             UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, categoryChoices, categoryChoices[0]);
+                        String chosenChoice = "";
+                        switch (inputCategory) {
+                            case 0:
+                                chosenChoice = "Independent";
+                                break;
+                            case 1:
+                                chosenChoice = "Company";
+                                break;
+                        }
+
+                        confirmOption = JOptionPane.showConfirmDialog(null, "Are you sure you want to change the developer's category?\n" +
+                                        "Developer's Current Category: " + this.category + "\nDeveloper's New Category: " + inputCategory,
+                                UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                        if (confirmOption == JOptionPane.YES_OPTION) {
+                            this.category = chosenChoice;
+                            JOptionPane.showMessageDialog(null, "Changed the developer's category successfully",
+                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Cancelled changing of developer category",
+                                    UITitle, JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                     break;
 
@@ -128,7 +150,6 @@ public class Developer extends AccountUser{
                     break;
             }
         }
-
     }
 
     @Override
@@ -143,13 +164,17 @@ public class Developer extends AccountUser{
         JOptionPane.showMessageDialog(null, new JTextArea(message), UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
 
-    public void publishGame(Game Game) {
-    	developerGameList.add(Game);
-        getStore().getStoreGameList().add(Game);
+    public void publishGame(Game game) {
+    	developerGameList.add(game);
+        getStore().getStoreGameList().add(game);
     }
 
-    public void removeGame(Game Game) {
-        developerGameList.remove(Game);
-        System.out.println("Game " + Game.getName() + " has been removed by " + getFullName());
+    public void removeGame(Game game) {
+        developerGameList.remove(game);
+        getStore().getStoreGameList().remove(game);
+    }
+
+    public LinkedList<Game> getDeveloperGameList() {
+        return developerGameList;
     }
 }

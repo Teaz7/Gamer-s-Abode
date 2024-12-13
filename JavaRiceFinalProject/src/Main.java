@@ -609,11 +609,14 @@ public class Main {
                                 Developer foundDeveloper = null;
                                 int userDeveloperOption;
 
-                                for (int i = 0; i < instancedDeveloperList.size(); i++) {
-                                    Developer developer = instancedDeveloperList.get(i);
-                                    if (developer.getFirstName().equals(userOption2)) {
+                                String inputtedDeveloper = JOptionPane.showInputDialog(null, "Input Developer Name:",
+                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                for (Developer developer : instancedDeveloperList) {
+                                    if (developer.getFirstName().equals(inputtedDeveloper)) {
                                         found = true;
                                         foundDeveloper = developer;
+                                        break;
                                     }
                                 }
 
@@ -624,14 +627,53 @@ public class Main {
 
                                         switch (userDeveloperOption) {
                                             case 0:
+                                                String gameName = JOptionPane.showInputDialog(null, "Enter the name of the game to publish: ",
+                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                String gamePrice = JOptionPane.showInputDialog(null, "Enter the price of the game to publish: ",
+                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                String gameYear = JOptionPane.showInputDialog(null, "Enter the game's year of release to publish: ",
+                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                Game devGame = new Game(gameName, Double.parseDouble(gamePrice), Integer.parseInt(gameYear), false, false, foundDeveloper);
+
+                                                foundDeveloper.publishGame(devGame);
+                                                JOptionPane.showMessageDialog(null, devGame.getName() + " has successfully been published to the store",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
                                                 break;
+
                                             case 1:
+                                                String devGameRemove = JOptionPane.showInputDialog(null, "Enter name of game to remove:",
+                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                Game gameToRemove = null;
+
+                                                for (Game g: foundDeveloper.getDeveloperGameList()) {
+                                                    if (g.getName().equalsIgnoreCase(devGameRemove)) {
+                                                        gameToRemove = g;
+                                                        break;
+                                                    }
+                                                }
+
+                                                int confirmRemove = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " +
+                                                        gameToRemove.getName() + "?", UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                if (confirmRemove == JOptionPane.YES_OPTION) {
+                                                    JOptionPane.showMessageDialog(null, "Successfully removed " + gameToRemove.getName(),
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                    foundDeveloper.removeGame(gameToRemove);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, "Cancelled removing " + gameToRemove.getName(),
+                                                            UITitle, JOptionPane.ERROR_MESSAGE);
+                                                }
                                                 break;
+
                                             case 2:
+                                                foundDeveloper.displayAccountDetails();
                                                 break;
+
                                             case 3:
+                                                foundDeveloper.changeAccountDetails();
                                                 break;
+
                                             case 4:
+                                                developerOptionRerun = false;
                                                 break;
                                         }
                                     }
