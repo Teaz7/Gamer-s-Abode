@@ -17,7 +17,7 @@ public class Customer extends AccountUser {
         int confirmOption;
 
         while (changeAccountRerun) {
-            int changeAccountPrompt = JOptionPane.showOptionDialog(null, "You may choose to change you acccount name, email, or country" +
+            int changeAccountPrompt = JOptionPane.showOptionDialog(null, "You may choose to change your acccount name, email, or country" +
                             "\nCurrent Account Name: " + this.getFullName() + "\nCurrent Email Address: " + this.getEmailAddress() + "\nCurrent Account Country: " +
                             this.getCountry(), UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE, null, changeAccountOptions, changeAccountOptions[0]);
 
