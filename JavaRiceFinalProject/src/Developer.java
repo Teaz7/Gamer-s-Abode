@@ -1,4 +1,4 @@
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.LinkedList;
 
 public class Developer extends AccountUser{

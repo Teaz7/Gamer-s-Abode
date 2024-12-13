@@ -31,6 +31,10 @@ public class Game {
         return year;
     }
 
+    public Developer getDeveloper() {
+        return developer;
+    }
+
     public boolean getIsOwned() {
         return isOwned;
     }

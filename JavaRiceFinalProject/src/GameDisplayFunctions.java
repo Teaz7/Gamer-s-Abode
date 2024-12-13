@@ -1,4 +1,4 @@
 public interface GameDisplayFunctions {
     public void displayGames();
-    public void sortGamesName(int start, int end);
+    public void sortGames(int start, int end, int type);
 }

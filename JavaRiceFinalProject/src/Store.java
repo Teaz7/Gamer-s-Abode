@@ -1,77 +1,38 @@
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import java.util.LinkedList;
+import java.util.Queue;
 
 public class Store implements GameDisplayFunctions {
     static String UITitle = "BSIT-2A Java Rice | Gamer's Abode Client";
 
     private AccountUser accountUser = null;
     private LinkedList<Game> storeGameList;
-    private Wishlist wishlist;
+    private LinkedList<Queue> wishList;
 
     public Store() {
         storeGameList = new LinkedList<>();
     }
 
-    public void purchase() {
-        String message = "";
-        Game game = null;
-
-        message = "Do you want to purchase a game?\n";
-        int promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (promptConfirm == JOptionPane.YES_OPTION) {
-            message = "Input Game Name:\n";
-            String userInput = JOptionPane.showInputDialog(null, message, UITitle, JOptionPane.PLAIN_MESSAGE);
-
-            boolean gameFound = false;
-            for (int i = 0; i < storeGameList.size(); i++) {
-                if (storeGameList.get(i).getName().equalsIgnoreCase(userInput)) {
-                    gameFound = true;
-                    game = storeGameList.get(i);
-                    break;
-                }
-            }
-
-            if (gameFound) {
-                message = "Do you want to purchase " + userInput + "?";
-                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                if (promptConfirm == JOptionPane.YES_OPTION) {
-                    accountUser.getLibrary().addGameToLibrary(game);
-                    JOptionPane.showMessageDialog(null, "Purchase Successful!", UITitle, JOptionPane.INFORMATION_MESSAGE);
-
-                }
-            }
-        }
+    public void purchase(Game game) {
+        accountUser.getLibrary().addGameToLibrary(game);
+        game.setIsOwned(true);
     }
 
-    public void refund() {
-        String message = "";
-        Game game = null;
+    public void refund(Game game) {
+        accountUser.getLibrary().removeGameFromLibrary(game);
+        game.setIsOwned(false);
+    }
 
-        message = "Do you want to refund a game?\n";
-        int promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-        if (promptConfirm == JOptionPane.YES_OPTION) {
-            message = "Input Game Name:\n";
-            String userInput = JOptionPane.showInputDialog(null, message, UITitle, JOptionPane.PLAIN_MESSAGE);
+    public void addToWishlist(Game game) {
+        
+    }
 
-            boolean gameFound = false;
-            for (int i = 0; i < storeGameList.size(); i++) {
-                if (storeGameList.get(i).getName().equalsIgnoreCase(userInput)) {
-                    gameFound = true;
-                    game = storeGameList.get(i);
-                    break;
-                }
-            }
+    public void removeFromWishlist(Game game) {
 
-            if (gameFound) {
-                message = "Do you want to refund " + userInput + "?";
-                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
-                if (promptConfirm == JOptionPane.YES_OPTION) {
-                    accountUser.getLibrary().removeGameFromLibrary(game);
-                    JOptionPane.showMessageDialog(null, "Refund Successful!", UITitle, JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-        }
+    }
+
+    public void displayWishlist() {
 
     }
 
@@ -87,44 +48,97 @@ public class Store implements GameDisplayFunctions {
     public void displayGames() {
         String message = "";
 
-        message += "Name " + "\t\t\t" + "Price" + "\n";
+        message += "NAME" + "\t\t" + "PRICE" + "\t\t" + "DEVELOPER" + "\t\n\n";
 
         for (Game game : storeGameList) {
-            message += game.getName() + "\t\t\t" + game.getPrice() + "\n";
+            message += game.getName();
+            if (game.getName().length() > 15) {
+                message += "\t";
+            } else {
+                message += "\t\t";
+            }
+
+            message += "P" + game.getPrice() + "\t\t" + game.getDeveloper().getFirstName() + "\t\n";
         }
 
         JOptionPane.showMessageDialog(null, new JTextArea(message), UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
-    public void sortGamesName(int start, int end) {
+    public void sortGames(int start, int end, int type) {
         if (start >= end) {
             return;
         }
 
         int i = start;
         int j = end;
-        String pivot = storeGameList.get((start + end) / 2).getName();
 
-        while (i <= j) {
-            while (storeGameList.get(i).getName().compareTo(pivot) < 0) {
-                i++;
-            }
+        switch (type) {
+            case 0:
+                String pivotName = storeGameList.get((start + end) / 2).getName();
+                while (i <= j) {
+                    while (storeGameList.get(i).getName().compareTo(pivotName) < 0) {
+                        i++;
+                    }
+                    while (storeGameList.get(j).getName().compareTo(pivotName) > 0) {
+                        j--;
+                    }
+                    if (i <= j) {
+                        Game temp = storeGameList.get(i);
+                        storeGameList.set(i, storeGameList.get(j));
+                        storeGameList.set(j, temp);
+                        i++;
+                        j--;
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "List has been alphabetically sorted based on the Game's name",
+                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                break;
 
-            while (storeGameList.get(j).getName().compareTo(pivot) > 0) {
-                j--;
-            }
+            case 1:
+                double pivotPrice = storeGameList.get((start + end) / 2).getPrice();
+                while (i <= j) {
+                    while (storeGameList.get(i).getPrice() < pivotPrice) {
+                        i++;
+                    }
+                    while (storeGameList.get(j).getPrice() > pivotPrice) {
+                        j--;
+                    }
+                    if (i <= j) {
+                        Game temp = storeGameList.get(i);
+                        storeGameList.set(i, storeGameList.get(j));
+                        storeGameList.set(j, temp);
+                        i++;
+                        j--;
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "List has been arranged in-ordeer based on the Game's price",
+                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                break;
 
-            if (i <= j) {
-                Game temp = storeGameList.get(i);
-                storeGameList.set(i, storeGameList.get(j));
-                storeGameList.set(j, temp);
-                i++;
-                j--;
-            }
+            case 2:
+                String pivotDev = storeGameList.get((start + end) / 2).getDeveloper().getFirstName();
+                while (i <= j) {
+                    while (storeGameList.get(i).getDeveloper().getFirstName().compareTo(pivotDev) < 0) {
+                        i++;
+                    }
+                    while (storeGameList.get(j).getDeveloper().getFirstName().compareTo(pivotDev) > 0) {
+                        j--;
+                    }
+                    if (i <= j) {
+                        Game temp = storeGameList.get(i);
+                        storeGameList.set(i, storeGameList.get(j));
+                        storeGameList.set(j, temp);
+                        i++;
+                        j--;
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "List has been alphabetically sorted based on the Game's Developer Name",
+                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                break;
         }
 
-        sortGamesName(start, j);
-        sortGamesName(i, end);
+        sortGames(start, j, type);
+        sortGames(i, end, type);
     }
 }

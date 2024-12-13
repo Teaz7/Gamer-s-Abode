@@ -1,4 +1,5 @@
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 public class Customer extends AccountUser {
     private double walletAmount;
@@ -34,12 +35,12 @@ public class Customer extends AccountUser {
     @Override
     public void displayAccountDetails() {
         String message = "";
-        message += "Name: " + getFullName() + "\n";
-        message += "Email: " + getEmailAddress() + "\n";
-        message += "Country: " + getCountry() + "\n";
-        message += "Wallet Amount: " + getWalletAmount() + "\n";
+        message += "Name:\t\t" + getFullName() + "\t\n";
+        message += "Email:\t\t" + getEmailAddress() + "\t\n";
+        message += "Country:\t\t" + getCountry() + "\t\n";
+        message += "Wallet Amount:\t" + getWalletAmount() + "\t\n";
 
-        JOptionPane.showMessageDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(null, new JTextArea(message), UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
                          
     public void depositFunds(double amount) {
@@ -67,6 +68,10 @@ public class Customer extends AccountUser {
 
     public double getWalletAmount() {
         return walletAmount;
+    }
+
+    public void setWalletAmount(double walletAmount) {
+        this.walletAmount = walletAmount;
     }
 }
     

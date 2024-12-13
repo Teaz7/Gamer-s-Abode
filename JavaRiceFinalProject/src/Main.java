@@ -17,15 +17,19 @@ public class Main {
     /*---       MAIN       ---*/
     public static void main(String[] args) {
         String[][] uiOptions = {{"Store", "Library", "Account", "Developer", "Exit"}, //Home
-                                {"Purchase Game", "Refund Game", "Display Games", "Sort Games", "Back"}, //Store
-                                {"Install Game", "Uninstall Game", "Display Games", "Sort Games", "Back"}, //Library
-                                {"Deposit Funds", "Display Account Details", "Change Account Details", "Back"}, //Customer Account
-                                {"Use Developer", "Add Developer", "Remove Developer", "Display Developers", "Back"}, //Developer Account - Choose Developer
-                                {"Publish Game", "Remove Game", "Display Details", "Edit Details", "Back"}}; //Developer Account - Developer Functions
+                {"Purchase Game", "Refund Game", "Display Games", "Sort Games", "Wishlist", "Back"}, //Store
+                {"Install Game", "Uninstall Game", "Display Games", "Sort Games", "Back"}, //Library
+                {"Deposit Funds", "Display Account Details", "Change Account Details", "Back"}, //Customer Account
+                {"Use Developer", "Add Developer", "Remove Developer", "Display Developers", "Back"}, //Developer Account - Choose Developer
+                {"Publish Game", "Remove Game", "Display Details", "Edit Details", "Back"}, //Developer Account - Developer Functions
+                {"Add to Wishlist", "Remove from WIshlist", "Display Wishlist", "Back"}}; // Wishlist
+        String[] storeSortOptions = {"Sort Name", "Sort Price", "Sort Developer", "Back"};
+        String[] librarySortOptions = {"Sort Name", "Sort Year", "Back"};
         LinkedList<Developer> instancedDeveloperList = new LinkedList<>();
         boolean programRerun = true;
         boolean chosenOptionRerun = true;
         boolean developerOptionRerun = true;
+        boolean wishlistOptionRerun = true;
         Store store = new Store();
         Library library = new Library();
 
@@ -117,29 +121,153 @@ public class Main {
                             "Number of Games in Store: " + store.getStoreGameList().size() + "\nNumber of Games Owned: " + library.getLibraryGameList().size(),
                     UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[0], uiOptions[0][0]);
             int userOption2;
+            Game game;
+            boolean gameFound;
+            int promptConfirm;
 
             switch (userOption) {
                 /*---       STORE     ---*/
                 case 0:
                     while (chosenOptionRerun) {
-                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   H O M E\n" + drawBorder(65) +
+                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   S T O R E\n" + drawBorder(65) +
                                 "Welcome to the store! Discover and purchase new games to add to your library.\n\n" +
                                 "Number of Games in Store: " + store.getStoreGameList().size(),
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[1], uiOptions[1][0]);
+
                         switch (userOption2) {
                             case 0:
-                                store.purchase();
+                                game = null;
+                                gameFound = false;
+                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to purchase a game?",
+                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                    String userInput = JOptionPane.showInputDialog(null, "Input Game Name:\n" + "Current amount in wallet: P" +
+                                                    customerAccount.getWalletAmount(), UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    if (userInput == null) {
+                                        JOptionPane.showMessageDialog(null, "Purchasing cancelled,",
+                                                UITitle, JOptionPane.ERROR_MESSAGE);
+                                    } else if (userInput == "") {
+                                        JOptionPane.showMessageDialog(null, "Input the name of the game",
+                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    } else {
+                                        for (int i = 0; i < store.getStoreGameList().size(); i++) {
+                                            if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                gameFound = true;
+                                                game = store.getStoreGameList().get(i);
+                                                break;
+                                            }
+                                        }
+
+                                        if (gameFound) {
+                                            String message = "Do you want to purchase " + userInput + "?\n" + "Game price: P" + game.getPrice();
+                                            promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                            if (promptConfirm == JOptionPane.NO_OPTION) {
+                                                JOptionPane.showMessageDialog(null, "Purchasing cancelled,",
+                                                        UITitle, JOptionPane.ERROR_MESSAGE);
+                                            } else if (promptConfirm == JOptionPane.YES_OPTION && customerAccount.getWalletAmount() >= game.getPrice()) {
+                                                if (!game.getIsOwned()) {
+                                                    store.purchase(game);
+                                                    customerAccount.setWalletAmount(customerAccount.getWalletAmount() - game.getPrice());
+                                                    JOptionPane.showMessageDialog(null, "Purchase Successful!\n" + "Current wallet amount: P" +
+                                                            customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, "Game is already purchased",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                }
+
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Not enough money\n" + "Current wallet amount: P" +
+                                                        customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            }
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+                                }
+
                                 break;
                             case 1:
-                                store.refund();
+                                game = null;
+                                gameFound = false;
+                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to refund a game?",
+                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                    String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
+                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                    if (userInput == null) {
+                                        JOptionPane.showMessageDialog(null, "Refunding cancelled,",
+                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    } else if (userInput == "") {
+                                        JOptionPane.showMessageDialog(null, "Input the name of the game",
+                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    } else {
+                                        for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                            if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                gameFound = true;
+                                                game = library.getLibraryGameList().get(i);
+                                                break;
+                                            }
+                                        }
+
+                                        if (gameFound) {
+                                            String message = "Do you want to refund " + userInput + "?";
+                                            promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            if (promptConfirm == JOptionPane.YES_NO_OPTION) {
+                                                if (game.getIsOwned()) {
+                                                    store.refund(game);
+                                                    customerAccount.setWalletAmount(customerAccount.getWalletAmount() + game.getPrice());
+                                                    JOptionPane.showMessageDialog(null, "Refund Successful!\n" + "Current wallet amount: P" +
+                                                            customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, "You haven't bought this game yet",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                }
+                                            }
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                        }
+                                    }
+                                }
+
                                 break;
                             case 2:
                                 store.displayGames();
                                 break;
                             case 3:
-                                store.sortGamesName(0, store.getStoreGameList().size()-1);
+                                int storeSort = JOptionPane.showOptionDialog(null, "Do you want to sort the current list?\n" +
+                                                "You may choose any of the choices " + "below if you want to sort by Name, Price, or Developer.",
+                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, storeSortOptions, storeSortOptions[0]);
+                                if (storeSort != 3) {
+                                    store.sortGames(0, store.getStoreGameList().size()-1, storeSort);
+                                }
                                 break;
                             case 4:
+                                wishlistOptionRerun = true;
+                                while (wishlistOptionRerun) {
+                                    int userOptionWishlist = JOptionPane.showOptionDialog(null, "This is the wishlist. " +
+                                                    "Here you can add games\nto your wishlist to show what games you are prioritizing.",
+                                            UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[6], uiOptions[6][0]);
+
+                                    switch (userOptionWishlist) {
+                                        case 0:
+                                            break;
+                                        case 1:
+                                            break;
+                                        case 2:
+                                            break;
+                                        case 3:
+                                            wishlistOptionRerun = false;
+                                            break;
+                                    }
+                                }
+                                break;
+                            case 5:
                                 chosenOptionRerun = false;
                                 break;
                         }
@@ -151,19 +279,104 @@ public class Main {
                 /*---       LIBRARY     ---*/
                 case 1:
                     while (chosenOptionRerun) {
-                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   H O M E\n" + drawBorder(65) +
+                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   L I B R A R Y\n" + drawBorder(65) +
                                         "Here is your game library. Browse and manage your collection of games.\n\n" +
                                         "Number of Games in Library: " + library.getLibraryGameList().size(),
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[2], uiOptions[2][0]);
                         switch (userOption2) {
                             case 0:
+                                game = null;
+                                gameFound = false;
+                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to install a game?",
+                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                    String userInput = JOptionPane.showInputDialog(null, "Enter name of game to install:",
+                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                    for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                        if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                            gameFound = true;
+                                            game = library.getLibraryGameList().get(i);
+                                            break;
+                                        }
+                                    }
+
+                                    if (gameFound) {
+                                        String message = "Do you want to install " + userInput + "?";
+                                        promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                        if (promptConfirm == JOptionPane.YES_OPTION) {
+                                            if (game.getIsOwned()) {
+                                                if (!game.getIsInstalled()) {
+                                                    library.install(game);
+                                                    JOptionPane.showMessageDialog(null, game.getName() + " successfully installed",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, game.getName() + " has already been installed",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Game is not yet owned",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            }
+                                        }
+                                    } else {
+                                        JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                }
+
                                 break;
                             case 1:
+                                game = null;
+                                gameFound = false;
+                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to uninstall a game?",
+                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                    String userInput = JOptionPane.showInputDialog(null, "Enter name of game to uninstall:",
+                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                    for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                        if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                            gameFound = true;
+                                            game = library.getLibraryGameList().get(i);
+                                            break;
+                                        }
+                                    }
+
+                                    if (gameFound) {
+                                        String message = "Do you want to uninstall " + userInput + "?";
+                                        promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                        if (promptConfirm == JOptionPane.YES_OPTION) {
+                                            if (game.getIsOwned()) {
+                                                if (game.getIsInstalled()) {
+                                                    library.install(game);
+                                                    JOptionPane.showMessageDialog(null, game.getName() + " successfully uninstalled",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, game.getName() + " is not installed",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                }
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Game is not yet owned",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            }
+                                        }
+                                    } else {
+                                        JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                }
+
                                 break;
                             case 2:
                                 library.displayGames();
                                 break;
                             case 3:
+                                int storeSort = JOptionPane.showOptionDialog(null, "message",
+                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, librarySortOptions, librarySortOptions[0]);
+                                library.sortGames(0, library.getLibraryGameList().size() - 1, storeSort); //to fix
                                 break;
                             case 4:
                                 chosenOptionRerun = false;
@@ -177,13 +390,14 @@ public class Main {
                 /*---       ACCOUNT     ---*/
                 case 2:
                     while (chosenOptionRerun) {
-                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   H O M E\n" + drawBorder(65) +
+                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   A C C O U N T\n" + drawBorder(65) +
                                         "Here is you Account. Deposit funds into your wallet and purchase games from the store.\n\n" +
                                         "Current Amount in Wallet: " + customerAccount.getWalletAmount(),
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[3], uiOptions[3][0]);
                         switch (userOption2) {
                             case 0:
-                                String amountInput = JOptionPane.showInputDialog(null, "input number: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                String amountInput = JOptionPane.showInputDialog(null, "Input number to add to wallet: " +
+                                        "Current amount in waller: P" + customerAccount.getWalletAmount(), UITitle, JOptionPane.PLAIN_MESSAGE);
                                 customerAccount.depositFunds(Double.parseDouble(amountInput));
                                 break;
                             case 1:
@@ -205,7 +419,7 @@ public class Main {
                 case 3:
                     while (chosenOptionRerun) {
                         developerOptionRerun = true;
-                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   H O M E\n" + drawBorder(65) +
+                        userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   D E V E L O P E R\n" + drawBorder(65) +
                                         "Access developer tools and resources here. Manage developed game projects and updates.\n\n" +
                                         "Enter name of developer to use: ",
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[4], uiOptions[4][0]);
