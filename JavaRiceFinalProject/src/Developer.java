@@ -171,10 +171,15 @@ public class Developer extends AccountUser{
 
     public void removeGame(Game game) {
         developerGameList.remove(game);
+        getStore().getWishList().remove(game);
         getStore().getStoreGameList().remove(game);
     }
 
     public LinkedList<Game> getDeveloperGameList() {
         return developerGameList;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }

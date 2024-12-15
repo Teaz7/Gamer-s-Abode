@@ -1,4 +1,4 @@
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.util.LinkedList;
 
 public class Main {
@@ -18,15 +18,21 @@ public class Main {
         JOptionPane.showMessageDialog(null, "Please enter the name of the game", UITitle, JOptionPane.INFORMATION_MESSAGE);
     }
 
+    public static void promptErrorMessage(String message) {
+        JOptionPane.showMessageDialog(null, message,
+                UITitle, JOptionPane.ERROR_MESSAGE);
+    }
+
     /*------------          MAIN           ------------*/
     public static void main(String[] args) {
         String[][] uiOptions = {{"Store", "Library", "Account", "Developer", "Exit"}, //Home
-                {"Purchase Game", "Refund Game", "Display Games", "Sort Games", "Wishlist", "Back"}, //Store
-                {"Install Game", "Uninstall Game", "Display Games", "Sort Games", "Back"}, //Library
-                {"Deposit Funds", "Display Account Details", "Change Account Details", "Back"}, //Customer Account
-                {"Use Developer", "Add Developer", "Remove Developer", "Display Developers", "Back"}, //Developer Account - Choose Developer
-                {"Publish Game", "Remove Game", "Display Details", "Edit Details", "Back"}, //Developer Account - Developer Functions
-                {"Add to Wishlist", "Remove from WIshlist", "Display Wishlist", "Back"}}; // Wishlist
+                                {"Purchase Game", "Refund Game", "Display Games", "Sort Games", "Wishlist", "Back"}, //Store
+                                {"Install Game", "Uninstall Game", "Display Games", "Sort Games", "Back"}, //Library
+                                {"Deposit Funds", "Display Account Details", "Change Account Details", "Back"}, //Customer Account
+                                {"Use Developer", "Add Developer", "Remove Developer", "Display Developers", "Back"}, //Developer Account - Choose Developer
+                                {"Publish Game", "Remove Game", "Display Details", "Edit Details", "Back"}, //Developer Account - Developer Functions
+                                {"Add to Wishlist", "Remove from WIshlist", "Display Wishlist", "Back"}}; // Wishlist
+
         String[] storeSortOptions = {"Sort Name", "Sort Price", "Sort Developer", "Back"};
         String[] librarySortOptions = {"Sort Name", "Sort Year", "Back"};
         LinkedList<Developer> instancedDeveloperList = new LinkedList<>();
@@ -102,6 +108,7 @@ public class Main {
 
 
         /*---------        SETUP ACCOUNT        ---------*/
+        /*
         JOptionPane.showMessageDialog(null, "Account not detected yet. Enter Name, Country,\nand Email Address to create an Account.",
                 UITitle, JOptionPane.WARNING_MESSAGE);
         String accountFirstName, accountLastName, accountCountry, accountEmailAddress;
@@ -125,6 +132,10 @@ public class Main {
         }
 
         Customer customerAccount = new Customer(accountFirstName, accountLastName, accountCountry, accountEmailAddress, store, library);
+
+         */
+
+        Customer customerAccount = new Customer("accountFirstName", "accountLastName", "accountCountry", "accountEmailAddress", store, library);
 
 
         /*---------        PROGRAM START        ---------*/
@@ -154,148 +165,161 @@ public class Main {
                         switch (userOption2) {
                             /*------    PURCHASE   ------*/
                             case 0:
-                                game = null;
-                                gameFound = false;
-                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to purchase a game?",
-                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                if (!store.getStoreGameList().isEmpty()) {
+                                    game = null;
+                                    gameFound = false;
+                                    promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to purchase a game?",
+                                            UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                    while (true) {
-                                        String userInput = JOptionPane.showInputDialog(null, "Input Game Name:\n" + "Current amount in wallet: P" +
-                                                customerAccount.getWalletAmount(), UITitle, JOptionPane.PLAIN_MESSAGE);
-                                        if (userInput == null) {
-                                            JOptionPane.showMessageDialog(null, "Purchasing cancelled,",
-                                                    UITitle, JOptionPane.ERROR_MESSAGE);
-                                            break;
-                                        } else if (userInput.isEmpty()) {
-                                            promptEmptyInputs();
-                                        } else {
-                                            for (int i = 0; i < store.getStoreGameList().size(); i++) {
-                                                if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                    gameFound = true;
-                                                    game = store.getStoreGameList().get(i);
-                                                    break;
-                                                }
-                                            }
-
-                                            if (gameFound) {
-                                                String message = "Do you want to purchase " + userInput + "?\n" + "Game price: P" + game.getPrice();
-                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-                                                if (promptConfirm == JOptionPane.NO_OPTION) {
-                                                    JOptionPane.showMessageDialog(null, "Purchasing cancelled.",
-                                                            UITitle, JOptionPane.ERROR_MESSAGE);
-                                                } else if (promptConfirm == JOptionPane.YES_OPTION && customerAccount.getWalletAmount() >= game.getPrice()) {
-                                                    if (!game.getIsOwned()) {
-                                                        store.purchase(game);
-                                                        customerAccount.setWalletAmount(customerAccount.getWalletAmount() - game.getPrice());
-                                                        JOptionPane.showMessageDialog(null, "Purchase Successful!\n" + "Current wallet amount: P" +
-                                                                customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
-
-                                                        int repeat = JOptionPane.showConfirmDialog(null, "Do you want to keep adding?\n" +
-                                                                "Current amount in wallet: P" + customerAccount.getWalletAmount(), UITitle, JOptionPane.YES_NO_OPTION);
-                                                        if (repeat == JOptionPane.NO_OPTION) {
-                                                            break;
-                                                        }
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(null, "Game is already purchased",
-                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                        while (true) {
+                                            String userInput = JOptionPane.showInputDialog(null, "Input Game Name:\n" + "Current amount in wallet: P" +
+                                                    customerAccount.getWalletAmount(), UITitle, JOptionPane.PLAIN_MESSAGE);
+                                            if (userInput == null) {
+                                                promptErrorMessage("Purchasing cancelled.");
+                                                break;
+                                            } else if (userInput.isEmpty()) {
+                                                promptEmptyInputs();
+                                            } else {
+                                                for (int i = 0; i < store.getStoreGameList().size(); i++) {
+                                                    if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                        gameFound = true;
+                                                        game = store.getStoreGameList().get(i);
                                                         break;
                                                     }
+                                                }
 
+                                                if (gameFound) {
+                                                    String message = "Do you want to purchase " + userInput + "?\n" + "Game price: P" + game.getPrice();
+                                                    promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                                                    if (promptConfirm == JOptionPane.NO_OPTION) {
+                                                        promptErrorMessage("Purchasing cancelled.");
+                                                    } else if (promptConfirm == JOptionPane.YES_OPTION && customerAccount.getWalletAmount() >= game.getPrice()) {
+                                                        if (!game.getIsOwned()) {
+                                                            store.purchase(game);
+                                                            customerAccount.setWalletAmount(customerAccount.getWalletAmount() - game.getPrice());
+                                                            JOptionPane.showMessageDialog(null, "Purchase Successful!\n" + "Current wallet amount: P" +
+                                                                    customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+
+                                                            int repeat = JOptionPane.showConfirmDialog(null, "Do you want to keep adding?\n" +
+                                                                    "Current amount in wallet: P" + customerAccount.getWalletAmount(), UITitle, JOptionPane.YES_NO_OPTION);
+                                                            if (repeat == JOptionPane.NO_OPTION) {
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            JOptionPane.showMessageDialog(null, "Game is already purchased",
+                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            break;
+                                                        }
+
+                                                    } else {
+                                                        JOptionPane.showMessageDialog(null, "Not enough money\n" + "Current wallet amount: P" +
+                                                                customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                        break;
+                                                    }
                                                 } else {
-                                                    JOptionPane.showMessageDialog(null, "Not enough money\n" + "Current wallet amount: P" +
-                                                            customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                    JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
                                                     break;
                                                 }
-                                            } else {
-                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                break;
                                             }
                                         }
                                     }
+                                } else {
+                                    promptErrorMessage("There is no game available for purchase.\nThe Store is currently empty.");
                                 }
 
                                 break;
 
                             /*------    REFUND   ------*/
                             case 1:
-                                game = null;
-                                gameFound = false;
-                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to refund a game?",
-                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                if (!library.getLibraryGameList().isEmpty()) {
+                                    game = null;
+                                    gameFound = false;
+                                    promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to refund a game?",
+                                            UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                    while (true) {
-                                        String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
-                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                        while (true) {
+                                            String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
+                                                    UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                        if (userInput == null) {
-                                            JOptionPane.showMessageDialog(null, "Refunding cancelled.",
-                                                    UITitle, JOptionPane.ERROR_MESSAGE);
-                                            break;
-                                        } else if (userInput.isEmpty()) {
-                                            promptEmptyInputs();
-                                        } else {
-                                            for (int i = 0; i < library.getLibraryGameList().size(); i++) {
-                                                if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                    gameFound = true;
-                                                    game = library.getLibraryGameList().get(i);
-                                                    break;
-                                                }
-                                            }
-
-                                            if (gameFound) {
-                                                String message = "Do you want to refund " + userInput + "?";
-                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                    if (game.getIsOwned()) {
-                                                        store.refund(game);
-                                                        customerAccount.setWalletAmount(customerAccount.getWalletAmount() + game.getPrice());
-                                                        JOptionPane.showMessageDialog(null, "Refund Successful!\n" + "Current wallet amount: P" +
-                                                                customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                        break;
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(null, "You haven't bought this game yet",
-                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            if (userInput == null) {
+                                                promptErrorMessage("Refunding cancelled.");
+                                                break;
+                                            } else if (userInput.isEmpty()) {
+                                                promptEmptyInputs();
+                                            } else {
+                                                for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                                    if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                        gameFound = true;
+                                                        game = library.getLibraryGameList().get(i);
                                                         break;
                                                     }
                                                 }
-                                            } else {
-                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+
+                                                if (gameFound) {
+                                                    String message = "Do you want to refund " + userInput + "?";
+                                                    promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                        if (game.getIsOwned()) {
+                                                            store.refund(game);
+                                                            customerAccount.setWalletAmount(customerAccount.getWalletAmount() + game.getPrice());
+                                                            JOptionPane.showMessageDialog(null, "Refund Successful!\n" + "Current wallet amount: P" +
+                                                                    customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            break;
+                                                        } else {
+                                                            JOptionPane.showMessageDialog(null, "You haven't bought this game yet",
+                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                   promptErrorMessage("There is no game available to refund.\nThe Library is currently empty.");
                                 }
                                 break;
 
                             /*------    DISPLAY   ------*/
                             case 2:
-                                store.displayGames();
+                                if (store.getStoreGameList().isEmpty()) {
+                                    promptErrorMessage("The store is currently empty. There is nothing to display here.");
+                                } else {
+                                    store.displayGames();
+                                }
                                 break;
 
                             /*------    SORT   ------*/
                             case 3:
-                                int storeSort = JOptionPane.showOptionDialog(null, "Do you want to sort the current list?\n" +
-                                                "You may choose any of the choices " + "below if you want to sort by Name, Price, or Developer.",
-                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, storeSortOptions, storeSortOptions[0]);
-                                if (storeSort != 3) {
-                                    store.sortGames(0, store.getStoreGameList().size()-1, storeSort);
-                                    switch (storeSort) {
-                                        case 0:
-                                            JOptionPane.showMessageDialog(null, "Store list has been alphabetically sorted based on the Game's name",
-                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                            break;
-                                        case 1:
-                                            JOptionPane.showMessageDialog(null, "Store list has been arranged in-order based on the Game's price",
-                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                            break;
-                                        case 2:
-                                            JOptionPane.showMessageDialog(null, "Store list has been alphabetically sorted based on the Game's Developer Name",
-                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                            break;
+                                if (store.getStoreGameList().isEmpty()) {
+                                    promptErrorMessage("The store is currently empty. There is nothing to sort here.");
+                                } else {
+                                    int storeSort = JOptionPane.showOptionDialog(null, "Do you want to sort the current list?\n" +
+                                                    "You may choose any of the choices " + "below if you want to sort by Name, Price, or Developer.",
+                                            UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, storeSortOptions, storeSortOptions[0]);
+                                    if (storeSort != 3) {
+                                        store.sortGames(0, store.getStoreGameList().size()-1, storeSort);
+                                        switch (storeSort) {
+                                            case 0:
+                                                JOptionPane.showMessageDialog(null, "Store list has been alphabetically sorted based on the Game's name",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                break;
+                                            case 1:
+                                                JOptionPane.showMessageDialog(null, "Store list has been arranged in-order based on the Game's price",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                break;
+                                            case 2:
+                                                JOptionPane.showMessageDialog(null, "Store list has been alphabetically sorted based on the Game's Developer Name",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                break;
+                                        }
                                     }
                                 }
                                 break;
@@ -313,47 +337,54 @@ public class Main {
                                     switch (userOptionWishlist) {
                                         /*------    ADD TO WISHLIST   ------*/
                                         case 0:
-                                            promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want add a game to your wishlist?",
-                                                    UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                            if (store.getStoreGameList().isEmpty()) {
+                                                promptErrorMessage("The store is currently empty.\nThere is nothing to add to the wishlist.");
+                                            } else {
+                                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want add a game to your wishlist?",
+                                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                            if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                while (true) {
-                                                    String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                    while (true) {
+                                                        String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
+                                                                UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                                    if (userInput.isEmpty()) {
-                                                        promptEmptyInputs();
-                                                    } else {
-                                                        for (int i = 0; i < store.getStoreGameList().size(); i++) {
-                                                            if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                                gameFound = true;
-                                                                game = store.getStoreGameList().get(i);
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (gameFound) {
-                                                            String message = "Do you want to add " + userInput + " to your wishlist?";
-                                                            promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                                            if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                                if (game.getIsOwned()) {
-                                                                    JOptionPane.showMessageDialog(null, "You already own the game",
-                                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                                } else if(store.getWishList().contains(game)) {
-                                                                    JOptionPane.showMessageDialog(null, "Game has already been added to the wishlist",
-                                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                                    break;
-                                                                } else {
-                                                                    store.addToWishlist(game);
-                                                                    JOptionPane.showMessageDialog(null, game.getName() + " has been succesfully added to the wishlist.",
-                                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                        if (userInput == null) {
+                                                            promptErrorMessage("Cancelled adding a game to wishlist.");
+                                                            break;
+                                                        } else if (userInput.isEmpty()) {
+                                                            promptEmptyInputs();
+                                                        } else {
+                                                            for (int i = 0; i < store.getStoreGameList().size(); i++) {
+                                                                if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                                    gameFound = true;
+                                                                    game = store.getStoreGameList().get(i);
                                                                     break;
                                                                 }
                                                             }
-                                                        } else {
-                                                            JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
+
+                                                            if (gameFound) {
+                                                                String message = "Do you want to add " + userInput + " to your wishlist?";
+                                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                                    if (game.getIsOwned()) {
+                                                                        JOptionPane.showMessageDialog(null, "You already own the game",
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                    } else if(store.getWishList().contains(game)) {
+                                                                        JOptionPane.showMessageDialog(null, "Game has already been added to the wishlist",
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                        break;
+                                                                    } else {
+                                                                        store.addToWishlist(game);
+                                                                        JOptionPane.showMessageDialog(null, game.getName() + " has been succesfully added to the wishlist.",
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -362,44 +393,51 @@ public class Main {
 
                                         /*------    REMOVE FROM WISHLIST   ------*/
                                         case 1:
-                                            promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want remove a game from your wishlist?",
-                                                    UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                            if (store.getWishList().isEmpty()) {
+                                                promptErrorMessage("The wishlist is currently empty.\nThere is nothing to remove here.");
+                                            } else {
+                                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want remove a game from your wishlist?",
+                                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                            if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                while (true) {
-                                                    String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                    while (true) {
+                                                        String userInput = JOptionPane.showInputDialog(null, "Input Game Name:",
+                                                                UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                                    if (userInput.isEmpty()) {
-                                                        promptEmptyInputs();
-                                                    } else {
-                                                        for (int i = 0; i < store.getStoreGameList().size(); i++) {
-                                                            if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                                gameFound = true;
-                                                                game = store.getStoreGameList().get(i);
-                                                                break;
-                                                            }
-                                                        }
-
-                                                        if (gameFound) {
-                                                            String message = "Do you want to remove " + userInput + " from your wishlist?";
-                                                            promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                                            if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                                if(!store.getWishList().contains(game)) {
-                                                                    JOptionPane.showMessageDialog(null, game.getName() + " hasn't been added to your wishlist yet",
-                                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                                    break;
-                                                                } else {
-                                                                    store.removeFromWishlist(game);
-                                                                    JOptionPane.showMessageDialog(null, game.getName() + " has been succesfully removed from your wishlist.",
-                                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                        if (userInput == null) {
+                                                            promptErrorMessage("Cancelled removing a game from wishlist.");
+                                                            break;
+                                                        } else if (userInput.isEmpty()) {
+                                                            promptEmptyInputs();
+                                                        } else {
+                                                            for (int i = 0; i < store.getStoreGameList().size(); i++) {
+                                                                if (store.getStoreGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                                    gameFound = true;
+                                                                    game = store.getStoreGameList().get(i);
                                                                     break;
                                                                 }
                                                             }
-                                                        } else {
-                                                            JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
+
+                                                            if (gameFound) {
+                                                                String message = "Do you want to remove " + userInput + " from your wishlist?";
+                                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                                if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                                    if(!store.getWishList().contains(game)) {
+                                                                        JOptionPane.showMessageDialog(null, game.getName() + " hasn't been added to your wishlist yet",
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                        break;
+                                                                    } else {
+                                                                        store.removeFromWishlist(game);
+                                                                        JOptionPane.showMessageDialog(null, game.getName() + " has been succesfully removed from your wishlist.",
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -408,7 +446,11 @@ public class Main {
 
                                         /*------    DISPLAY WISHLIST   ------*/
                                         case 2:
-                                            store.displayWishlist();
+                                            if (store.getWishList().isEmpty()) {
+                                                promptErrorMessage("The wishlist is currently empty. There is nothing to display here.");
+                                            } else {
+                                                store.displayWishlist();
+                                            }
                                             break;
 
                                         /*------    EXIT WISHLIST   ------*/
@@ -438,144 +480,159 @@ public class Main {
                         switch (userOption2) {
                             /*------    INSTALL   ------*/
                             case 0:
-                                game = null;
-                                gameFound = false;
-                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to install a game?",
-                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                if (!store.getStoreGameList().isEmpty()) {
+                                    game = null;
+                                    gameFound = false;
+                                    promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to install a game?",
+                                            UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                    while (true) {
-                                        String userInput = JOptionPane.showInputDialog(null, "Enter name of game to install:",
-                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                        while (true) {
+                                            String userInput = JOptionPane.showInputDialog(null, "Enter name of game to install:",
+                                                    UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                        if (userInput == null) {
-                                            JOptionPane.showMessageDialog(null, "Installing cancelled",
-                                                    UITitle, JOptionPane.ERROR_MESSAGE);
-                                            break;
-                                        } else if (userInput.isEmpty()) {
-                                            promptEmptyInputs();
-                                        } else {
-                                            for (int i = 0; i < library.getLibraryGameList().size(); i++) {
-                                                if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                    gameFound = true;
-                                                    game = library.getLibraryGameList().get(i);
-                                                    break;
-                                                }
-                                            }
-
-                                            if (gameFound) {
-                                                String message = "Do you want to install " + userInput + "?";
-                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                    if (game.getIsOwned()) {
-                                                        if (!game.getIsInstalled()) {
-                                                            library.install(game);
-                                                            JOptionPane.showMessageDialog(null, game.getName() + " successfully installed",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
-                                                        } else {
-                                                            JOptionPane.showMessageDialog(null, game.getName() + " has already been installed",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
-                                                        }
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(null, "Game is not yet owned",
-                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                            if (userInput == null) {
+                                                promptErrorMessage("Installing cancelled.");
+                                                break;
+                                            } else if (userInput.isEmpty()) {
+                                                promptEmptyInputs();
+                                            } else {
+                                                for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                                    if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                        gameFound = true;
+                                                        game = library.getLibraryGameList().get(i);
                                                         break;
                                                     }
                                                 }
-                                            } else {
-                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                break;
+
+                                                if (gameFound) {
+                                                    String message = "Do you want to install " + userInput + "?";
+                                                    promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                        if (game.getIsOwned()) {
+                                                            if (!game.getIsInstalled()) {
+                                                                library.install(game);
+                                                                JOptionPane.showMessageDialog(null, game.getName() + " successfully installed",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, game.getName() + " has already been installed",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            JOptionPane.showMessageDialog(null, "Game is not yet owned",
+                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                    promptErrorMessage("There is no game available for installing.\nThe store is currently empty.");
                                 }
 
                                 break;
 
                             /*------    UNINSTALL   ------*/
                             case 1:
-                                game = null;
-                                gameFound = false;
-                                promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to uninstall a game?",
-                                        UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                if (!library.getLibraryGameList().isEmpty()) {
+                                    game = null;
+                                    gameFound = false;
+                                    promptConfirm = JOptionPane.showConfirmDialog(null, "Do you want to uninstall a game?",
+                                            UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                    while (true) {
-                                        String userInput = JOptionPane.showInputDialog(null, "Enter name of game to uninstall:",
-                                                UITitle, JOptionPane.PLAIN_MESSAGE);
-                                        if (userInput == null) {
-                                            JOptionPane.showMessageDialog(null, "Uninstalling cancelled",
-                                                    UITitle, JOptionPane.ERROR_MESSAGE);
-                                            break;
-                                        } else if (userInput.isEmpty()) {
-                                            promptEmptyInputs();
-                                        } else {
-                                            for (int i = 0; i < library.getLibraryGameList().size(); i++) {
-                                                if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
-                                                    gameFound = true;
-                                                    game = library.getLibraryGameList().get(i);
-                                                    break;
-                                                }
-                                            }
-
-                                            if (gameFound) {
-                                                String message = "Do you want to uninstall " + userInput + "?";
-                                                promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                                if (promptConfirm == JOptionPane.YES_OPTION) {
-                                                    if (game.getIsOwned()) {
-                                                        if (game.getIsInstalled()) {
-                                                            library.uninstall(game);
-                                                            JOptionPane.showMessageDialog(null, game.getName() + " successfully uninstalled",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
-                                                        } else {
-                                                            JOptionPane.showMessageDialog(null, game.getName() + " is not installed",
-                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                            break;
-                                                        }
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(null, "Game is not yet owned",
-                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                        while (true) {
+                                            String userInput = JOptionPane.showInputDialog(null, "Enter name of game to uninstall:",
+                                                    UITitle, JOptionPane.PLAIN_MESSAGE);
+                                            if (userInput == null) {
+                                                promptErrorMessage("Uninstalling cancelled.");
+                                                break;
+                                            } else if (userInput.isEmpty()) {
+                                                promptEmptyInputs();
+                                            } else {
+                                                for (int i = 0; i < library.getLibraryGameList().size(); i++) {
+                                                    if (library.getLibraryGameList().get(i).getName().equalsIgnoreCase(userInput)) {
+                                                        gameFound = true;
+                                                        game = library.getLibraryGameList().get(i);
                                                         break;
                                                     }
                                                 }
-                                            } else {
-                                                JOptionPane.showMessageDialog(null, userInput + " not found.",
-                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                break;
+
+                                                if (gameFound) {
+                                                    String message = "Do you want to uninstall " + userInput + "?";
+                                                    promptConfirm = JOptionPane.showConfirmDialog(null, message, UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                    if (promptConfirm == JOptionPane.YES_OPTION) {
+                                                        if (game.getIsOwned()) {
+                                                            if (game.getIsInstalled()) {
+                                                                library.uninstall(game);
+                                                                JOptionPane.showMessageDialog(null, game.getName() + " successfully uninstalled",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            } else {
+                                                                JOptionPane.showMessageDialog(null, game.getName() + " is not installed",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                break;
+                                                            }
+                                                        } else {
+                                                            JOptionPane.showMessageDialog(null, "Game is not yet owned",
+                                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            break;
+                                                        }
+                                                    }
+                                                } else {
+                                                    JOptionPane.showMessageDialog(null, userInput + " not found.",
+                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                    promptErrorMessage("There is no game available for uninstalling.\nThe library is currently empty.");
                                 }
 
                                 break;
 
                             /*------    DISPLAY   ------*/
                             case 2:
-                                library.displayGames();
+                                if (library.getLibraryGameList().isEmpty()) {
+                                    promptErrorMessage("The library is currently empty. There is nothing to display here.");
+                                } else {
+                                    library.displayGames();
+                                }
                                 break;
 
                             /*------    SORT   ------*/
                             case 3:
-                                int librarySort = JOptionPane.showOptionDialog(null, "Do you want to sort your library?\n" +
-                                                "You may choose any of the choices " + "below if you want to sort by Name or Year released.",
-                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, librarySortOptions, librarySortOptions[0]);
-                                library.sortGames(0, library.getLibraryGameList().size() - 1, librarySort);
-                                if (librarySort != 2) {
-                                    switch (librarySort) {
-                                        case 0:
-                                            JOptionPane.showMessageDialog(null, "Library has been alphabetically sorted based on the Game's name",
-                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                            break;
-                                        case 1:
-                                            JOptionPane.showMessageDialog(null, "Library has been arranged in-order based on the Game's year release",
-                                                    UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                            break;
+                                if (library.getLibraryGameList().isEmpty()) {
+                                    promptErrorMessage("The library is currently empty. There is nothing to sort here.");
+                                } else {
+                                    int librarySort = JOptionPane.showOptionDialog(null, "Do you want to sort your library?\n" +
+                                                    "You may choose any of the choices " + "below if you want to sort by Name or Year released.",
+                                            UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, librarySortOptions, librarySortOptions[0]);
+                                    library.sortGames(0, library.getLibraryGameList().size() - 1, librarySort);
+                                    if (librarySort != 2) {
+                                        switch (librarySort) {
+                                            case 0:
+                                                JOptionPane.showMessageDialog(null, "Library has been alphabetically sorted based on the Game's name",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                break;
+                                            case 1:
+                                                JOptionPane.showMessageDialog(null, "Library has been arranged in-order based on the Game's year release",
+                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                break;
+                                        }
                                     }
                                 }
+
                                 break;
 
                             /*------    EXIT LIBRARY   ------*/
@@ -601,8 +658,7 @@ public class Main {
                                     String amountInput = JOptionPane.showInputDialog(null, "Input number to add to wallet:\n" +
                                             "Current amount in wallet: P" + customerAccount.getWalletAmount(), UITitle, JOptionPane.PLAIN_MESSAGE);
                                     if (amountInput == null) {
-                                        JOptionPane.showMessageDialog(null, "Cancelled depositing money into wallet",
-                                                UITitle, JOptionPane.ERROR_MESSAGE);
+                                        promptErrorMessage("Cancelled depositing money into wallet");
                                         break;
                                     } else {
                                         try {
@@ -655,174 +711,278 @@ public class Main {
                     while (chosenOptionRerun) {
                         developerOptionRerun = true;
                         userOption2 = JOptionPane.showOptionDialog(null, "G A M E R ' S   A B O D E :   D E V E L O P E R\n" + drawBorder(65) +
-                                        "Access developer tools and resources here. Manage developed game projects and updates.\n\n" +
-                                        "Enter name of developer to use: ",
+                                        "Access developer tools and resources here. Manage developed game projects and updates.\n\n",
                                 UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[4], uiOptions[4][0]);
                         switch (userOption2) {
                             /*---       DEVELOPER       ---*/
                             case 0:
-                                boolean found = false;
-                                Developer foundDeveloper = null;
-                                int userDeveloperOption;
+                                if (instancedDeveloperList.isEmpty()) {
+                                    promptErrorMessage("Unable to use this function.\nCurrently there are no developers that have been created.");
+                                } else {
+                                    boolean found = false;
+                                    Developer foundDeveloper = null;
+                                    int userDeveloperOption;
 
-                                while (true) {
-                                    String inputtedDeveloper = JOptionPane.showInputDialog(null, "Input Developer Name:",
-                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    while (true) {
+                                        String inputtedDeveloper = JOptionPane.showInputDialog(null, "Input Developer Name:",
+                                                UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                    for (Developer developer : instancedDeveloperList) {
-                                        if (developer.getFirstName().equals(inputtedDeveloper)) {
-                                            found = true;
-                                            foundDeveloper = developer;
+                                        if (inputtedDeveloper == null) {
+                                            promptErrorMessage("Cancelled using developer tool");
                                             break;
-                                        }
-                                    }
-
-                                    if (found) {
-                                        while (developerOptionRerun) {
-                                            userDeveloperOption = JOptionPane.showOptionDialog(null, "You choose among the options whether to add or remove a game.",
-                                                    UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[5], uiOptions[5][0]);
-
-                                            switch (userDeveloperOption) {
-                                                case 0:
-                                                    String gameName = JOptionPane.showInputDialog(null, "Enter the name of the game to publish: ",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
-                                                    String gamePrice = JOptionPane.showInputDialog(null, "Enter the price of the game to publish: ",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
-                                                    String gameYear = JOptionPane.showInputDialog(null, "Enter the game's year of release to publish: ",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
-                                                    Game devGame = new Game(gameName, Double.parseDouble(gamePrice), Integer.parseInt(gameYear), false, false, foundDeveloper);
-
-                                                    foundDeveloper.publishGame(devGame);
-                                                    JOptionPane.showMessageDialog(null, devGame.getName() + " has successfully been published to the store",
-                                                            UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                        } else {
+                                            for (Developer developer : instancedDeveloperList) {
+                                                if (developer.getFirstName().equalsIgnoreCase(inputtedDeveloper)) {
+                                                    found = true;
+                                                    foundDeveloper = developer;
                                                     break;
+                                                }
+                                            }
 
-                                                case 1:
-                                                    String devGameRemove = JOptionPane.showInputDialog(null, "Enter name of game to remove:",
-                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
-                                                    Game gameToRemove = null;
+                                            if (found) {
+                                                while (developerOptionRerun) {
+                                                    userDeveloperOption = JOptionPane.showOptionDialog(null, "You choose among the options whether to add or remove a game.",
+                                                            UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, uiOptions[5], uiOptions[5][0]);
 
-                                                    for (Game g: foundDeveloper.getDeveloperGameList()) {
-                                                        if (g.getName().equalsIgnoreCase(devGameRemove)) {
-                                                            gameToRemove = g;
+                                                    switch (userDeveloperOption) {
+                                                        case 0:
+                                                            String gameName, gamePrice, gameYear;
+                                                            boolean nullPublish = false, publishFound = false;
+                                                            while (true) {
+                                                                gameName = JOptionPane.showInputDialog(null, "Enter the name of the game to publish: ",
+                                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                                gamePrice = JOptionPane.showInputDialog(null, "Enter the price of the game to publish: ",
+                                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+                                                                gameYear = JOptionPane.showInputDialog(null, "Enter the game's year of release to publish: ",
+                                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                                                if (gameName != null && gamePrice != null && gameYear != null) {
+                                                                    for (Game gamePublished : store.getStoreGameList()) {
+                                                                        if (gamePublished.getName().equalsIgnoreCase(gameName)) {
+                                                                            publishFound = true;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (gameName == null || gamePrice == null || gameYear == null) {
+                                                                    nullPublish = true;
+                                                                    break;
+                                                                } else if(publishFound) {
+                                                                    promptErrorMessage("The name " + gameName + " already exists. Please add another game");
+                                                                } else if (gameName.isEmpty() || gamePrice.isEmpty() || gameYear.isEmpty()) {
+                                                                    JOptionPane.showMessageDialog(null, "Please don't leave any blanks on the required fields",
+                                                                            UITitle, JOptionPane.ERROR_MESSAGE);
+                                                                } else {
+                                                                    break;
+                                                                }
+                                                            }
+
+                                                            if (nullPublish) {
+                                                                promptErrorMessage("Cancelled publishing a game.");
+                                                            } else {
+                                                                Game devGame = new Game(gameName, Double.parseDouble(gamePrice), Integer.parseInt(gameYear), false, false, foundDeveloper);
+
+                                                                foundDeveloper.publishGame(devGame);
+                                                                JOptionPane.showMessageDialog(null, devGame.getName() + " has successfully been published to the store",
+                                                                        UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                            }
                                                             break;
-                                                        }
+
+                                                        case 1:
+                                                            String devGameRemove;
+                                                            boolean nullRemove = false;
+                                                            if (foundDeveloper.getDeveloperGameList().isEmpty()) {
+                                                                promptErrorMessage("The developer hasn't published a game yet.\nThere is nothing to remove here.");
+                                                            } else {
+                                                                while (true) {
+                                                                    devGameRemove = JOptionPane.showInputDialog(null, "Enter name of game to remove:",
+                                                                            UITitle, JOptionPane.PLAIN_MESSAGE);
+
+                                                                    if (devGameRemove == null) {
+                                                                        nullRemove = true;
+                                                                        break;
+                                                                    } else if (devGameRemove.isEmpty()) {
+                                                                        JOptionPane.showMessageDialog(null, "Please don't leave any blanks on the required fields",
+                                                                                UITitle, JOptionPane.ERROR_MESSAGE);
+                                                                    } else {
+                                                                        break;
+                                                                    }
+                                                                }
+
+                                                                if (nullRemove) {
+                                                                    promptErrorMessage("Cancelled removing a game.");
+                                                                } else {
+                                                                    Game gameToRemove = null;
+
+                                                                    for (Game g: foundDeveloper.getDeveloperGameList()) {
+                                                                        if (g.getName().equalsIgnoreCase(devGameRemove)) {
+                                                                            gameToRemove = g;
+                                                                            break;
+                                                                        }
+                                                                    }
+
+                                                                    int confirmRemove = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " +
+                                                                            gameToRemove.getName() + "?", UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                                                    if (confirmRemove == JOptionPane.YES_OPTION) {
+                                                                        JOptionPane.showMessageDialog(null, "Successfully removed " + gameToRemove.getName(),
+                                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
+                                                                        foundDeveloper.removeGame(gameToRemove);
+                                                                    } else {
+                                                                        promptErrorMessage("Cancelled removing " + gameToRemove.getName());
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            break;
+
+                                                        case 2:
+                                                            foundDeveloper.displayAccountDetails();
+                                                            break;
+
+                                                        case 3:
+                                                            foundDeveloper.changeAccountDetails();
+                                                            break;
+
+                                                        case 4:
+                                                            developerOptionRerun = false;
+                                                            break;
                                                     }
-
-                                                    int confirmRemove = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove " +
-                                                            gameToRemove.getName() + "?", UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                                    if (confirmRemove == JOptionPane.YES_OPTION) {
-                                                        JOptionPane.showMessageDialog(null, "Successfully removed " + gameToRemove.getName(),
-                                                                UITitle, JOptionPane.INFORMATION_MESSAGE);
-                                                        foundDeveloper.removeGame(gameToRemove);
-                                                    } else {
-                                                        JOptionPane.showMessageDialog(null, "Cancelled removing " + gameToRemove.getName(),
-                                                                UITitle, JOptionPane.ERROR_MESSAGE);
-                                                    }
-                                                    break;
-
-                                                case 2:
-                                                    foundDeveloper.displayAccountDetails();
-                                                    break;
-
-                                                case 3:
-                                                    foundDeveloper.changeAccountDetails();
-                                                    break;
-
-                                                case 4:
-                                                    developerOptionRerun = false;
-                                                    break;
+                                                }
+                                                break;
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "Developer not found",
+                                                        UITitle, JOptionPane.PLAIN_MESSAGE);
                                             }
                                         }
-                                        break;
-                                    } else {
-                                        JOptionPane.showMessageDialog(null, "Developer not found",
-                                                UITitle, JOptionPane.PLAIN_MESSAGE);
+
                                     }
                                 }
+
                                 break;
 
                             /*------    ADD DEVELOPER   ------*/
                             case 1:
                                 String[] devTypeChoices = {"Independent", "Company"};
-                                JOptionPane.showMessageDialog(null, "to add a dev, u need: name, email, country, and type.",
+                                JOptionPane.showMessageDialog(null, "To add a developer, you need to fill up the following fields:\n" +
+                                                "Developer Name, Developer Email, Developer Country, and Developer Type",
                                         UITitle, JOptionPane.PLAIN_MESSAGE);
                                 String devNameAdd, devEmail, devCountry;
+                                boolean nullAdd = false, devFound = false;
                                 while (true) {
-                                    devNameAdd = JOptionPane.showInputDialog(null, "Enter dev name: ", UITitle, JOptionPane.PLAIN_MESSAGE);
-                                    devEmail = JOptionPane.showInputDialog(null, "Enter email: ", UITitle, JOptionPane.PLAIN_MESSAGE);
-                                    devCountry = JOptionPane.showInputDialog(null, "Enter country: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    devNameAdd = JOptionPane.showInputDialog(null, "Enter Developer Name: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    devEmail = JOptionPane.showInputDialog(null, "Enter Developer Email Address: ", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    devCountry = JOptionPane.showInputDialog(null, "Enter Developer Country: ", UITitle, JOptionPane.PLAIN_MESSAGE);
 
-                                    if (devNameAdd.isEmpty() || devEmail.isEmpty() || devCountry.isEmpty()) {
+                                    if (devNameAdd != null && devEmail != null && devCountry != null) {
+                                        for (Developer developer : instancedDeveloperList) {
+                                            if (devNameAdd.equalsIgnoreCase(developer.getFirstName())) {
+                                                devFound = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (devNameAdd == null || devEmail == null || devCountry == null) {
+                                        nullAdd = true;
+                                        break;
+                                    } else if (devNameAdd.isEmpty() || devEmail.isEmpty() || devCountry.isEmpty()) {
                                         JOptionPane.showMessageDialog(null, "Please don't leave any blanks on the required fields",
                                                 UITitle, JOptionPane.ERROR_MESSAGE);
+                                    } else if(devFound) {
+                                        promptErrorMessage("The name " + devNameAdd + " already exists. Please add another name.");
                                     } else {
                                         break;
                                     }
                                 }
 
-                                String devType = "";
-                                int devTypeOption = JOptionPane.showOptionDialog(null, "Choose Developer Type:",
-                                        UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, devTypeChoices, devTypeChoices[0]);
-                                switch (devTypeOption) {
-                                    case 0:
-                                        devType = "Independent";
-                                        break;
-                                    case 1:
-                                        devType = "Company";
-                                        break;
+                                if (nullAdd) {
+                                    promptErrorMessage("Cancelled adding a developer.");
+                                } else {
+                                    String devType = "";
+                                    int devTypeOption = JOptionPane.showOptionDialog(null, "Choose Developer Type:",
+                                            UITitle, JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, devTypeChoices, devTypeChoices[0]);
+                                    switch (devTypeOption) {
+                                        case 0:
+                                            devType = "Independent";
+                                            break;
+                                        case 1:
+                                            devType = "Company";
+                                            break;
+                                    }
+
+                                    Developer developer = new Developer(devNameAdd, "", devCountry, devEmail, store, library, devType);
+                                    instancedDeveloperList.add(developer);
+                                    JOptionPane.showMessageDialog(null, "Succesfully created account", UITitle, JOptionPane.PLAIN_MESSAGE);
                                 }
 
-                                Developer developer = new Developer(devNameAdd, "", devCountry, devEmail, store, library, devType);
-                                instancedDeveloperList.add(developer);
-                                JOptionPane.showMessageDialog(null, "succesfully created account", UITitle, JOptionPane.PLAIN_MESSAGE);
                                 break;
 
                             /*------    REMOVE DEVELOPER   ------*/
                             case 2:
-                                String devNameRemove;
-                                while (true) {
-                                    devNameRemove = JOptionPane.showInputDialog(null, "input developer name to remove", UITitle, JOptionPane.PLAIN_MESSAGE);
-                                    if (devNameRemove.isEmpty()) {
-                                        JOptionPane.showMessageDialog(null, "Please input a developer's name", UITitle, JOptionPane.ERROR_MESSAGE);
-                                    } else {
-                                        break;
-                                    }
-                                }
-
-                                boolean devNameFound = false;
-                                Developer developerToRemove = null;
-                                for (int i = 1; i < instancedDeveloperList.size(); i++) {
-                                    if (instancedDeveloperList.get(i).getFirstName().equals(devNameRemove)) {
-                                        developerToRemove = instancedDeveloperList.get(i);
-                                        devNameFound = true;
-                                        break;
-                                    }
-                                }
-
-                                if (devNameFound) {
-                                    int confirmRemoveDev = JOptionPane.showConfirmDialog(null, "Do you want to remove " + developerToRemove.getFirstName() +"?",
-                                            UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
-                                    if (confirmRemoveDev == JOptionPane.YES_OPTION) {
-                                        for (Game g: developerToRemove.getDeveloperGameList()) {
-                                            developerToRemove.removeGame(g);
-                                        }
-                                        instancedDeveloperList.remove(developerToRemove);
-                                        JOptionPane.showMessageDialog(null, "developer removed", UITitle, JOptionPane.PLAIN_MESSAGE);
-                                    }
+                                boolean nullRemove = false;
+                                if (instancedDeveloperList.isEmpty()) {
+                                    promptErrorMessage("The list is currently empty.\nThere is nothing to remove here.");
                                 } else {
-                                    JOptionPane.showMessageDialog(null, "developer not found", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                    String devNameRemove;
+                                    while (true) {
+                                        devNameRemove = JOptionPane.showInputDialog(null, "input developer name to remove", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                        if (devNameRemove == null) {
+                                            nullRemove = true;
+                                            break;
+                                        } else if (devNameRemove.isEmpty()) {
+                                            JOptionPane.showMessageDialog(null, "Please input a developer's name", UITitle, JOptionPane.ERROR_MESSAGE);
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                    if (nullRemove) {
+                                        promptErrorMessage("Cancelled removing a developer.");
+                                    } else {
+                                        boolean devNameFound = false;
+                                        Developer developerToRemove = null;
+                                        for (int i = 1; i < instancedDeveloperList.size(); i++) {
+                                            if (instancedDeveloperList.get(i).getFirstName().equals(devNameRemove)) {
+                                                developerToRemove = instancedDeveloperList.get(i);
+                                                devNameFound = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (devNameFound) {
+                                            int confirmRemoveDev = JOptionPane.showConfirmDialog(null, "Do you want to remove " + developerToRemove.getFirstName() +"?",
+                                                    UITitle, JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE);
+                                            if (confirmRemoveDev == JOptionPane.YES_OPTION) {
+                                                for (Game g: developerToRemove.getDeveloperGameList()) {
+                                                    developerToRemove.removeGame(g);
+                                                }
+                                                instancedDeveloperList.remove(developerToRemove);
+                                                JOptionPane.showMessageDialog(null, "developer removed", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                            }
+                                        } else {
+                                            JOptionPane.showMessageDialog(null, "developer not found", UITitle, JOptionPane.PLAIN_MESSAGE);
+                                        }
+                                    }
                                 }
 
                                 break;
 
                             /*------    DISPLAY DEVELOPER   ------*/
                             case 3:
-                                String devMessage = "";
-                                for (int i = 0; i < instancedDeveloperList.size(); i++) {
-                                    devMessage += instancedDeveloperList.get(i).getFirstName() + ",  " + instancedDeveloperList.get(i).getEmailAddress() + "\n";
+                                if (instancedDeveloperList.isEmpty()) {
+                                    promptErrorMessage("The list is currently empty.\nThere is nothing to remove here.");
+                                } else {
+                                    String devMessage = "";
+                                    devMessage += "NAME\t\t\t" + "COUNTRY\t\t" + "CATEGORY\t" + "NO. OF GAMES\n";
+                                    for (Developer dev : instancedDeveloperList) {
+                                        devMessage += dev.getFirstName() + "\t\t";
+                                        if (dev.getFirstName().length() < 17) {
+                                            devMessage += "\t";
+                                        }
+
+                                        devMessage += dev.getCountry() + "\t\t" + dev.getCategory() + "\t" + dev.getDeveloperGameList().size() + "\t\n";
+                                    }
+                                    JOptionPane.showMessageDialog(null, new JTextArea(devMessage), UITitle, JOptionPane.PLAIN_MESSAGE);
                                 }
-                                JOptionPane.showMessageDialog(null, "List of Developers:\n" + devMessage, UITitle, JOptionPane.PLAIN_MESSAGE);
                                 break;
 
                             /*------    EXIT DEVELOPERS   ------*/

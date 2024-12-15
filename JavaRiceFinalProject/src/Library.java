@@ -28,10 +28,6 @@ public class Library implements GameDisplayFunctions {
         libraryGameList.remove(game);
     }
 
-    public AccountUser getAccountUser() {
-        return accountUser;
-    }
-
     public void setAccountUser(AccountUser accountUser) {
         this.accountUser = accountUser;
     }

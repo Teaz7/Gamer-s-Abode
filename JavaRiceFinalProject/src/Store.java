@@ -3,7 +3,7 @@ import javax.swing.JTextArea;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Store implements GameDisplayFunctions, WishlistFunctions {
+public class Store implements GameDisplayFunctions, WishListFunctions {
     static String UITitle = "BSIT-2A Java Rice | Gamer's Abode Client";
 
     private AccountUser accountUser = null;
@@ -17,6 +17,7 @@ public class Store implements GameDisplayFunctions, WishlistFunctions {
 
     public void purchase(Game game) {
         accountUser.getLibrary().addGameToLibrary(game);
+        wishList.remove(game);
         game.setIsOwned(true);
     }
 
