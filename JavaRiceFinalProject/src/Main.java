@@ -1,4 +1,5 @@
-import javax.swing.*;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import java.util.LinkedList;
 
 public class Main {
@@ -93,7 +94,7 @@ public class Main {
             boolean developerFound = false;
             Developer developer = null;
             for (int j = 0; j < instancedDeveloperList.size(); j++) {
-                if (instancedDeveloperList.get(j).getFirstName().equals(initialGames[i][5])) {
+                if (instancedDeveloperList.get(j).getFirstName().equalsIgnoreCase(initialGames[i][5])) {
                     developer = instancedDeveloperList.get(j);
                     developerFound = true;
                     break;
@@ -108,7 +109,6 @@ public class Main {
 
 
         /*---------        SETUP ACCOUNT        ---------*/
-        /*
         JOptionPane.showMessageDialog(null, "Account not detected yet. Enter Name, Country,\nand Email Address to create an Account.",
                 UITitle, JOptionPane.WARNING_MESSAGE);
         String accountFirstName, accountLastName, accountCountry, accountEmailAddress;
@@ -133,10 +133,7 @@ public class Main {
 
         Customer customerAccount = new Customer(accountFirstName, accountLastName, accountCountry, accountEmailAddress, store, library);
 
-         */
-
-        Customer customerAccount = new Customer("accountFirstName", "accountLastName", "accountCountry", "accountEmailAddress", store, library);
-
+        //Customer customerAccount = new Customer("accountFirstName", "accountLastName", "accountCountry", "accountEmailAddress", store, library);
 
         /*---------        PROGRAM START        ---------*/
         while (programRerun) {
@@ -152,8 +149,6 @@ public class Main {
             int promptConfirm;
 
             switch (userOption) {
-
-
                 /*---------       STORE     ---------*/
                 case 0:
                     while (chosenOptionRerun) {
@@ -202,7 +197,7 @@ public class Main {
                                                             JOptionPane.showMessageDialog(null, "Purchase Successful!\n" + "Current wallet amount: P" +
                                                                     customerAccount.getWalletAmount(), UITitle, JOptionPane.INFORMATION_MESSAGE);
 
-                                                            int repeat = JOptionPane.showConfirmDialog(null, "Do you want to keep adding?\n" +
+                                                            int repeat = JOptionPane.showConfirmDialog(null, "Do you want to keep purchasing?\n" +
                                                                     "Current amount in wallet: P" + customerAccount.getWalletAmount(), UITitle, JOptionPane.YES_NO_OPTION);
                                                             if (repeat == JOptionPane.NO_OPTION) {
                                                                 break;
@@ -941,7 +936,7 @@ public class Main {
                                         boolean devNameFound = false;
                                         Developer developerToRemove = null;
                                         for (int i = 1; i < instancedDeveloperList.size(); i++) {
-                                            if (instancedDeveloperList.get(i).getFirstName().equals(devNameRemove)) {
+                                            if (instancedDeveloperList.get(i).getFirstName().equalsIgnoreCase(devNameRemove)) {
                                                 developerToRemove = instancedDeveloperList.get(i);
                                                 devNameFound = true;
                                                 break;

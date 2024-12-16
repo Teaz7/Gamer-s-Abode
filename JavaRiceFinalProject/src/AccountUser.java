@@ -1,6 +1,7 @@
 public abstract class AccountUser {
     static String UITitle = "BSIT-2A Java Rice | Gamer's Abode Client";
 
+
     private String firstName;
     private String lastName;
     private String country;
